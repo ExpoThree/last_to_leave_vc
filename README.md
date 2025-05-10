@@ -1,6 +1,6 @@
-# 🎮 Pick a Corner! Discord Bot
+# 🎮 Last to Leave VC Discord Bot
 
-A fun elimination game bot for Discord voice channels. Users are randomly assigned to voice channels and eliminated if they are in the wrong one. Moderators can check participants, eliminate users, and add participants.
+A fun elimination game for Discord voice channels where users are eliminated until only one remains in the last voice channel! Moderators can check participants, eliminate users, and add new participants into the game.
 
 ## 🚀 Features
 
