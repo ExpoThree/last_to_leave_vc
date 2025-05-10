@@ -6,7 +6,7 @@ A fun elimination game for Discord voice channels where users are eliminated unt
 
 - **$checkvc**: Eliminates users who are not in a voice channel.
 - **$elim [color]**: Eliminates users in the specified voice channel (red or blue).
-- **$addparticipant**: Adds the participant role to all members (except eliminated ones).
+- **$addparticipant**: Adds the participant role to all members.
 - **$hello**: Sends a simple hello message.
 
 ## 📦 Requirements
