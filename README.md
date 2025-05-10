@@ -14,3 +14,5 @@ A fun elimination game bot for Discord voice channels. Users are randomly assign
 - Python 3.8+
 - `discord.py` (v2.0+)
 - `python-dotenv` (for loading environment variables)
+
+[Description given by OpenAI]
