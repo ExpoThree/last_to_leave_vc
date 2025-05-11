@@ -1,7 +1,7 @@
 import os
 from dotenv import load_dotenv
 import discord
-from discord.ext import commands, tasks
+from discord.ext import commands
 
 load_dotenv()  # Loads variables from .env into environment
 
@@ -13,8 +13,9 @@ PARTICIPANT_ROLE_ID = 1370729934992969828
 RED_CORNER_ID = 1176896434587570273
 BLUE_CORNER_ID = 1370738478731755560
 MODERATOR_ROLE_ID = 1370752012668375150
+GENERAL_CHANNEL_ID = 1176896434587570272
 
-commands_list = ['checkvc', 'elim', 'addparticipant', 'hello']
+remove_role_enabled = False
 
 intents = discord.Intents.default()
 intents.message_content = True 
@@ -27,10 +28,62 @@ client = commands.Bot(command_prefix="$", intents=intents)
 async def on_ready():
     print("We have logged in as {0.user}".format(client))  
 
+@client.event
+async def on_voice_state_update(member, before, after):
+    guild = client.get_guild(GUILD_ID)
+    log_channel = guild.get_channel(GENERAL_CHANNEL_ID)
+
+    if guild is None:
+        print("Guild not found!")
+        return
+    
+    eliminated_role = guild.get_role(ELIMINATED_ROLE_ID)
+    participant_role = guild.get_role(PARTICIPANT_ROLE_ID)
+    moderator_role = guild.get_role(MODERATOR_ROLE_ID)
+
+    if not remove_role_enabled:
+        return
+    
+    if before.channel is not None and after.channel is None:
+        if moderator_role in member.roles:
+            return
+        
+        await member.remove_roles(participant_role)
+        await member.add_roles(eliminated_role)
+        await log_channel.send(f"User {member.display_name} `{member.id}` has been eliminated.")
+
+@client.command()
+@commands.has_role(MODERATOR_ROLE_ID)
+async def startcheck(ctx):
+    "Enables the opertation of removing participant role if a user leaves a VC"
+
+    global remove_role_enabled 
+
+    if remove_role_enabled == True:
+        await ctx.channel.send(f"Voice check is already enabled.")
+        return
+    
+    remove_role_enabled = True
+    await ctx.channel.send(f"Voice check has been enabled.")
+
+@client.command()
+@commands.has_role(MODERATOR_ROLE_ID)
+async def stopcheck(ctx):
+    "Disables the opertation of removing participant role if a user leaves a VC"
+
+    global remove_role_enabled 
+
+    if remove_role_enabled == False:
+        await ctx.channel.send(f"Voice check is already disabled.")
+        return
+    
+    remove_role_enabled = False
+    await ctx.channel.send(f"Voice check has been disabled.")
+
 @client.command()
 @commands.has_role(MODERATOR_ROLE_ID)
 async def checkvc(ctx):
-    """Eliminates users who are not in VC"""
+    "A manual commnad which eliminates users who are not in VC"
 
     counter = 0
     guild = client.get_guild(GUILD_ID)
