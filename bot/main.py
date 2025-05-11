@@ -134,7 +134,11 @@ async def elim(ctx, color):
     else:
         await ctx.channel.send(f"Invalid color given: {color}")
         return
-        
+    
+    global remove_role_enabled
+    remove_role_enabled_temp_state = remove_role_enabled
+    remove_role_enabled = False
+    
     for member in guild.members:
         if member.bot:
             continue
@@ -144,6 +148,8 @@ async def elim(ctx, color):
             counter += 1
 
     await ctx.channel.send(f"Removed {counter} people form {color} corner")
+
+    remove_role_enabled = remove_role_enabled_temp_state
 
     command = client.get_command("checkvc")
     if command:
